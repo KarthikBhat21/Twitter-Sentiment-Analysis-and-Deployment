@@ -1,0 +1,108 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/prepare.py
+    deps:
+    - path: src/prepare.py
+      md5: faca3a37954d3325d0fb8a4d7a06d206
+      size: 1167
+    params:
+      params.yaml:
+        prepare.num_tweets: 500
+    outs:
+    - path: data/prepared
+      md5: ea99cd7c2ea1ea7495911d84b5d317c2.dir
+      size: 74364
+      nfiles: 1
+  featurize:
+    cmd: python src/featurization.py data/prepared data/features
+    deps:
+    - path: data/prepared
+      md5: ea99cd7c2ea1ea7495911d84b5d317c2.dir
+      size: 74364
+      nfiles: 1
+    - path: src/featurization.py
+      md5: aab474c025339cbc3b1d3f962fce3acf
+      size: 2236
+    outs:
+    - path: data/features
+      md5: f06357bc16222b0c3990d31c2fdd41f4.dir
+      size: 152940
+      nfiles: 1
+  train:
+    cmd: python src/train.py data/features model.pkl
+    deps:
+    - path: data/features
+      md5: 7a4d9cd107dfb9969f4b4274b3910261.dir
+      size: 55112
+      nfiles: 1
+    - path: src/train.py
+      md5: 2615226810ac1c7f20b478d92dac8922
+      size: 3422
+    params:
+      params.yaml:
+        train.max_features: 500
+        train.min_split: 3
+        train.n_est: 30
+        train.seed: 26105111
+        train.split: 0.05
+    outs:
+    - path: model.pkl
+      md5: bb2438281c2f67a6cc7768a688a96d95
+      size: 4598
+  data_extraction:
+    cmd: python src/data_extraction.py
+    deps:
+    - path: src/data_extraction.py
+      md5: dc5a9e8f2465ec5ef8527938f2b75ebe
+      size: 1322
+    params:
+      params.yaml:
+        data_extraction.num_tweets: 200
+    outs:
+    - path: data/extracted
+      md5: b8669c603f32e4f9618efc4709c7507d.dir
+      size: 29580
+      nfiles: 1
+  SVMtrainEvaluate:
+    cmd: python src/SVMtrainEvaluate.py data/features SVMmodel.pkl
+    deps:
+    - path: data/features
+      md5: 40a49d52e1a4d91c2f6750f277daa23f.dir
+      size: 55112
+      nfiles: 1
+    - path: src/SVMtrainEvaluate.py
+      md5: 53950f4af62aca93d31441f1b45a965c
+      size: 3595
+    params:
+      params.yaml:
+        SVMtrainEvaluate.max_features: 5000
+        SVMtrainEvaluate.min_split: 3
+        SVMtrainEvaluate.n_est: 30
+        SVMtrainEvaluate.seed: 26105111
+        SVMtrainEvaluate.split: 0.05
+    outs:
+    - path: SVMmodel.pkl
+      md5: 44f42f804e70bc0d9ee9839ef45b2fa3
+      size: 30190
+  LogistictrainEvaluate:
+    cmd: python src/LogistictrainEvaluate.py data/features Logisticmodel.pkl
+    deps:
+    - path: data/features
+      md5: f06357bc16222b0c3990d31c2fdd41f4.dir
+      size: 152940
+      nfiles: 1
+    - path: src/LogistictrainEvaluate.py
+      md5: 1abd2931f159911e9414aa614a619597
+      size: 8354
+    params:
+      params.yaml:
+        LogistictrainEvaluate.max_features: 5000
+        LogistictrainEvaluate.min_split: 3
+        LogistictrainEvaluate.n_est: 30
+        LogistictrainEvaluate.seed: 26105111
+        LogistictrainEvaluate.split: 0.05
+    outs:
+    - path: Logisticmodel.pkl
+      md5: eda29862ccf04e8a8f4c3eb890643588
+      size: 32621
