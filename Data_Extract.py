@@ -10,7 +10,7 @@ import lxml
 consumer_key = "Ganmnp3P1N5vFHZSiSwQf53IN"
 consumer_secret = "4U0YLsgsY1paRnwJYHum4WISEN01qN3zr4iS7kw3RvY6ye4Dij"
 access_token = "1519783902604365824-7Yuy108u7v0BrNuIVFRlvoEiAQSW8h"
-access_token_secret = "LhXMx038NNKdSxjkQPxNlFUVEDDRctraS8ZdIj25z8x8r"
+access_token_secret = "********************************************"
 
 # Authenticate
 auth = tw.OAuthHandler(consumer_key, consumer_secret)
